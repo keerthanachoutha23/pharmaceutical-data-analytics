@@ -1,0 +1,89 @@
+---
+title: "Medicine Analysis Report"
+author: "Keerthana Choutha"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## ** Overview of Dataset**
+```{r}
+df <- read.csv("Medicine_Details.csv", stringsAsFactors = FALSE)
+glimpse(df)
+```
+
+## ** Data Cleaning and Preprocessing**
+```{r}
+df <- df %>% 
+  rename(Medicine_Name = `Medicine.Name`,
+         Composition = `Composition`,
+         Uses = `Uses`,
+         Side_Effects = `Side_effects`,
+         Manufacturer = `Manufacturer`,
+         Excellent_Review = `Excellent.Review..`,
+         Average_Review = `Average.Review..`,
+         Poor_Review = `Poor.Review..`)
+
+df <- df %>% mutate(across(Excellent_Review:Poor_Review, as.numeric))
+```
+
+## ** Sentiment Analysis: Review Distribution**
+```{r}
+review_distribution <- df %>%
+  summarise(
+    Excellent = mean(Excellent_Review),
+    Average = mean(Average_Review),
+    Poor = mean(Poor_Review)
+  ) %>% 
+  pivot_longer(cols = everything(), names_to = "Review_Type", values_to = "Percentage")
+
+ggplot(review_distribution, aes(x = Review_Type, y = Percentage, fill = Review_Type)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = round(Percentage, 1)), vjust = -0.5) +
+  theme_minimal() +
+  labs(title = "Overall Distribution of Medicine Reviews", y = "Percentage (%)", x = "Review Type") +
+  scale_fill_manual(values = c("Excellent" = "steelblue", "Average" = "orange", "Poor" = "red"))
+```
+
+## ** Top & Worst Medicines**
+```{r}
+top_medicines <- df %>% arrange(desc(Excellent_Review)) %>% head(10)
+worse_medicines <- df %>% arrange(desc(Poor_Review)) %>% head(10)
+
+kable(top_medicines, caption = "Top 10 Best-Rated Medicines")
+kable(worse_medicines, caption = "Top 10 Worst-Rated Medicines")
+```
+
+## ** Most Common Side Effects**
+```{r}
+side_effects <- df %>% select(Side_Effects) %>% 
+  separate_rows(Side_Effects, sep = ", ") %>% 
+  count(Side_Effects, sort = TRUE)
+
+top_side_effects <- side_effects %>% head(10)
+kable(top_side_effects, caption = "Top 10 Most Common Side Effects")
+```
+
+## ** Manufacturer Performance**
+```{r}
+manufacturer_reviews <- df %>%
+  group_by(Manufacturer) %>%
+  summarise(Average_Excellent = mean(Excellent_Review, na.rm = TRUE)) %>%
+  arrange(desc(Average_Excellent))
+
+top_manufacturers <- manufacturer_reviews %>% head(10)
+
+ggplot(top_manufacturers, aes(x = reorder(Manufacturer, -Average_Excellent), y = Average_Excellent, fill = Manufacturer)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Top 10 Manufacturers by Excellent Review Percentage", x = "Manufacturer", y = "Average Excellent Review (%)") +
+  theme(legend.position = "none")
+```
