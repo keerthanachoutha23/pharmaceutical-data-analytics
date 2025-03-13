@@ -1,5 +1,5 @@
-## Please look at my report with all the graphs and the code:
-https://0acf8361a03f46fa96ba70193bf77434.app.posit.cloud/file_show?path=%2Fcloud%2Fproject%2FMedicine_Analysis.html
+## Please look at my report with the graphs and code:
+[Medicine Analysis Report](https://0acf8361a03f46fa96ba70193bf77434.app.posit.cloud/file_show?path=%2Fcloud%2Fproject%2FMedicine_Analysis.html)
 
 # Medicine Analysis Report: An Evaluation of Medicine Reviews and Manufacturer Performance
 
