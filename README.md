@@ -31,4 +31,4 @@ A detailed **Medicine Analysis Report** based on this dataset has been generated
 - Manufacturer performance analysis.
 
 You can view the full report here:
-[Medicine Analysis Report](https://0acf8361a03f46fa96ba70193bf77434.app.posit.cloud/file_show?path=%2Fcloud%2Fproject%2FMedicine_Analysis.html)
+[Medicine Analysis Report](https://keerthanachoutha23.github.io/pharmaceutical-data-analytics/)
